@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ctrl S | Informes y Estadísticas</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #ffffff 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    /* Contenedor principal */
+    .informes-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 0rem;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .informes-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .informes-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .informes-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.3rem;
+    }
+
+    /* Cuerpo */
+    .informes-body {
+      padding: 2rem;
+    }
+
+    /* Acciones del header */
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .titulo-pagina {
+      color: #1f4870;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Botones de exportación */
+    .export-buttons {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-export {
+      background: white;
+      color: #1f4870;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #cbdde9;
+      cursor: pointer;
+    }
+
+    .btn-export:hover {
+      background: #1f4870;
+      color: white;
+      border-color: #1f4870;
+      transform: translateY(-2px);
+    }
+
+    /* Resumen estadístico */
+    .resumen-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1rem 1.5rem;
+      border: 1px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      min-width: 160px;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: #eef2fa;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .stat-info h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1f4870;
+      line-height: 1.2;
+    }
+
+    .stat-info p {
+      font-size: 0.7rem;
+      color: #6c86a3;
+      font-weight: 500;
+    }
+
+    /* Layout de dos columnas para gráficos */
+    .charts-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      flex: 1;
+      min-width: 280px;
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid #eef2f8;
+    }
+
+    .chart-card h3 {
+      font-size: 1rem;
+      color: #1f4870;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Gráfico de barras simple (CSS puro) */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .bar-label {
+      width: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #2c4e6e;
+    }
+
+    .bar-container {
+      flex: 1;
+      height: 28px;
+      background: #eef2fa;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .fill-blue { background: #1f4870; width: 75%; }
+    .fill-green { background: #27ae60; width: 45%; }
+    .fill-orange { background: #f39c12; width: 30%; }
+    .fill-red { background: #e74c3c; width: 15%; }
+    .fill-purple { background: #8e44ad; width: 55%; }
+
+    /* Gráfico circular */
+    .donut-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .donut {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(#27ae60 0deg 130deg, #1f4870 130deg 220deg, #f39c12 220deg 280deg, #e74c3c 280deg 360deg);
+      margin-bottom: 0.5rem;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Tabla de citas por médico */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 1.2rem;
+      border: 1px solid #eef2f8;
+      background: white;
+      margin-top: 0.5rem;
+    }
+
+    .tabla-reporte {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .tabla-reporte thead tr {
+      background: #1f4870;
+      color: white;
+    }
+
+    .tabla-reporte th, .tabla-reporte td {
+      padding: 0.8rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .tabla-reporte tbody tr:hover {
+      background: #f8fafd;
+    }
+
+    /* ========== MATRIZ DE RIESGOS ========== */
+    .matriz-container {
+      background: white;
+      border-radius: 1.2rem;
+      border: 1px solid #eef2f8;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    .matriz-titulo {
+      background: #1f4870;
+      color: white;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .matriz-titulo i {
+      font-size: 1.2rem;
+    }
+
+    .matriz-grid {
+      display: grid;
+      grid-template-columns: 150px repeat(5, 1fr);
+      min-width: 700px;
+    }
+
+    .matriz-header {
+      background: #eef2fa;
+      font-weight: 700;
+      color: #1f4870;
+      text-align: center;
+      padding: 1rem 0.5rem;
+      border-bottom: 2px solid #cbdde9;
+      font-size: 0.85rem;
+    }
+
+    .matriz-item {
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+      border-bottom: 1px solid #eef2f8;
+      border-right: 1px solid #eef2f8;
+      font-size: 0.8rem;
+    }
+
+    .matriz-label {
+      background: #f8fafd;
+      font-weight: 600;
+      color: #1f4870;
+      text-align: left;
+      padding-left: 1rem;
+    }
+
+    .riesgo-bajo {
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: 0.5rem;
+      margin: 0.2rem;
+      padding: 0.3rem;
+    }
+
+    .riesgo-medio {
+      background: #fef9c3;
+      color: #854d0e;
+      border-radius: 0.5rem;
+      margin: 0.2rem;
+      padding: 0.3rem;
+    }
+
+    .riesgo-alto {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-radius: 0.5rem;
+      margin: 0.2rem;
+      padding: 0.3rem;
+    }
+
+    .riesgo-critico {
+      background: #7f1d1d;
+      color: white;
+      border-radius: 0.5rem;
+      margin: 0.2rem;
+      padding: 0.3rem;
+    }
+
+    .matriz-footer {
+      padding: 1rem;
+      background: #f8fafd;
+      font-size: 0.7rem;
+      color: #6c86a3;
+      text-align: center;
+      border-top: 1px solid #eef2f8;
+    }
+
+    /* Footer */
+    .informes-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      .informes-body { padding: 1rem; }
+      .resumen-stats { flex-direction: column; }
+      .stat-card { min-width: auto; }
+      .charts-row { flex-direction: column; }
+      .bar-label { width: 80px; font-size: 0.7rem; }
+    }
+
+    @media screen and (max-width: 480px) {
+      .donut-container { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="informes-container">
+  <div class="informes-body">
+    <div class="header-actions">
+      <h2 class="titulo-pagina">
+        <i class="fas fa-chart-line"></i> 
+        Informes y Estadísticas
+      </h2>
+      <div class="export-buttons">
+        <button class="btn-export" onclick="window.print()">
+          <i class="fas fa-print"></i> Imprimir
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumen estadístico -->
+    <div class="resumen-stats">
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-day"></i></div><div class="stat-info"><h3>12</h3><p>Total citas</p></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-plus" style="color: #1e40af;"></i></div><div class="stat-info"><h3>3</h3><p>Citas agendadas</p></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color: #27ae60;"></i></div><div class="stat-info"><h3>1</h3><p>Citas confirmadas</p></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle" style="color: #e74c3c;"></i></div><div class="stat-info"><h3>1</h3><p>Canceladas</p></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-star" style="color: #f39c12;"></i></div><div class="stat-info"><h3>1</h3><p>Citas Finalizadas</p></div></div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-simple"></i> Citas por especialidad</h3>
+        <div class="bar-chart">
+          <div class="bar-item"><span class="bar-label"><i class="fas fa-stethoscope"></i> Medicina General</span><div class="bar-container"><div class="bar-fill fill-blue" style="width: 75%;">75%</div></div></div>
+          <div class="bar-item"><span class="bar-label"><i class="fas fa-heartbeat"></i> Cardiología</span><div class="bar-container"><div class="bar-fill fill-green" style="width: 45%;">45%</div></div></div>
+          <div class="bar-item"><span class="bar-label"><i class="fas fa-allergies"></i> Dermatología</span><div class="bar-container"><div class="bar-fill fill-orange" style="width: 30%;">30%</div></div></div>
+          <div class="bar-item"><span class="bar-label"><i class="fas fa-baby"></i> Pediatría</span><div class="bar-container"><div class="bar-fill fill-purple" style="width: 55%;">55%</div></div></div>
+          <div class="bar-item"><span class="bar-label"><i class="fas fa-tooth"></i> Odontología</span><div class="bar-container"><div class="bar-fill fill-red" style="width: 20%;">20%</div></div></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> Distribución por estado</h3>
+        <div class="donut-container">
+          <div class="donut"></div>
+          <div class="donut-legend">
+            <div class="legend-item"><div class="legend-color" style="background: #27ae60;"></div> Confirmadas (1)</div>
+            <div class="legend-item"><div class="legend-color" style="background: #1f4870;"></div> Agendadas (3)</div>
+            <div class="legend-item"><div class="legend-color" style="background: #f39c12;"></div> Finalizadas (1)</div>
+            <div class="legend-item"><div class="legend-color" style="background: #e74c3c;"></div> Canceladas (1)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-line"></i> Tendencia mensual</h3>
+        <div class="bar-chart">
+          <div class="bar-item"><span class="bar-label">Enero</span><div class="bar-container"><div class="bar-fill fill-blue" style="width: 40%;">4</div></div></div>
+          <div class="bar-item"><span class="bar-label">Febrero</span><div class="bar-container"><div class="bar-fill fill-green" style="width: 55%;">5</div></div></div>
+          <div class="bar-item"><span class="bar-label">Marzo</span><div class="bar-container"><div class="bar-fill fill-orange" style="width: 70%;">7</div></div></div>
+          <div class="bar-item"><span class="bar-label">Abril</span><div class="bar-container"><div class="bar-fill fill-purple" style="width: 85%;">9</div></div></div>
+          <div class="bar-item"><span class="bar-label">Mayo</span><div class="bar-container"><div class="bar-fill fill-red" style="width: 60%;">6</div></div></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fas fa-user-md"></i> Top médicos por atenciones</h3>
+        <div class="bar-chart">
+          <div class="bar-item"><span class="bar-label">Dr. Alejandro Ríos</span><div class="bar-container"><div class="bar-fill fill-blue" style="width: 85%;">85%</div></div></div>
+          <div class="bar-item"><span class="bar-label">Dra. Laura Gómez</span><div class="bar-container"><div class="bar-fill fill-green" style="width: 70%;">70%</div></div></div>
+          <div class="bar-item"><span class="bar-label">Dr. Carlos Martínez</span><div class="bar-container"><div class="bar-fill fill-orange" style="width: 55%;">55%</div></div></div>
+          <div class="bar-item"><span class="bar-label">Dra. Sofía Ramírez</span><div class="bar-container"><div class="bar-fill fill-purple" style="width: 40%;">40%</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de citas por médico -->
+    <div class="chart-card" style="margin-top: 0;">
+      <h3><i class="fas fa-table"></i> Detalle de citas por médico</h3>
+      <div class="table-container">
+        <table class="tabla-reporte">
+          <thead><tr><th>Médico</th><th>Especialidad</th><th>Citas agendadas</th><th>Citas confirmadas</th><th>Canceladas</th><th>Finalizadas</th></tr></thead>
+          <tbody>
+            <tr><td>Dr. Alejandro Ríos</td><td>Medicina General</td><td>4</td><td>2</td><td>1</td><td>1</td></tr>
+            <tr><td>Dra. Laura Gómez</td><td>Cardiología</td><td>3</td><td>1</td><td>0</td><td>1</td></tr>
+            <tr><td>Dr. Carlos Martínez</td><td>Dermatología</td><td>2</td><td>1</td><td>1</td><td>0</td></tr>
+            <tr><td>Dra. Sofía Ramírez</td><td>Pediatría</td><td>2</td><td>1</td><td>0</td><td>0</td></tr>
+            <tr><td>Dr. Juan Pérez</td><td>Odontología</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== MATRIZ DE RIESGOS ========== -->
+    <div class="chart-card" style="margin-top: 0;">
+      <h3><i class="fas fa-exclamation-triangle"></i> Matriz de Riesgos Operativos</h3>
+      <div class="matriz-container">
+        <div class="matriz-titulo">
+          <i class="fas fa-chart-simple"></i> Matriz de Riesgos - Gestión de Citas Médicas
+        </div>
+        
+        <!-- Cabeceras de la matriz -->
+        <div class="matriz-grid">
+          <div class="matriz-header">Riesgos / Probabilidad</div>
+          <div class="matriz-header">Muy Baja</div>
+          <div class="matriz-header">Baja</div>
+          <div class="matriz-header">Media</div>
+          <div class="matriz-header">Alta</div>
+          <div class="matriz-header">Muy Alta</div>
+        </div>
+
+        <!-- Fila 1: Sobreagendamiento -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-calendar-week"></i> Sobreagendamiento</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-medio">● Medio</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 2: Cancelación de última hora -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-ban"></i> Cancelación última hora</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-alto">● Alto</span></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 3: Inasistencia del paciente -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-user-slash"></i> Inasistencia del paciente</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-medio">● Medio</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 4: Error en asignación de horario -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-clock"></i> Error asignación horario</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-alto">● Alto</span></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 5: Caída del sistema -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-server"></i> Caída del sistema</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-critico">● Crítico</span></div>
+        </div>
+
+        <!-- Fila 6: Doble agendamiento -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-clone"></i> Doble agendamiento</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-bajo">● Bajo</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 7: Pérdida de información -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-database"></i> Pérdida de información</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-critico">● Crítico</span></div>
+        </div>
+
+        <!-- Fila 8: Datos incorrectos del paciente -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-id-card"></i> Datos incorrectos</div>
+          <div class="matriz-item"><span class="riesgo-bajo">● Muy Bajo</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 9: Demora en atención -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-hourglass-half"></i> Demora en atención</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-medio">● Medio</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <!-- Fila 10: Conflicto entre horarios -->
+        <div class="matriz-grid">
+          <div class="matriz-item matriz-label"><i class="fas fa-calendar-times"></i> Conflicto de horarios</div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"><span class="riesgo-bajo">● Bajo</span></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+          <div class="matriz-item"></div>
+        </div>
+
+        <div class="matriz-footer">
+          <i class="fas fa-info-circle"></i> Leyenda de colores: 
+          <span style="background:#dcfce7; color:#15803d; padding:0.1rem 0.5rem; border-radius:1rem;">Bajo</span> 
+          <span style="background:#fef9c3; color:#854d0e; padding:0.1rem 0.5rem; border-radius:1rem;">Medio</span> 
+          <span style="background:#fee2e2; color:#b91c1c; padding:0.1rem 0.5rem; border-radius:1rem;">Alto</span> 
+          <span style="background:#7f1d1d; color:white; padding:0.1rem 0.5rem; border-radius:1rem;">Crítico</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="informes-footer">
+    <p><i class="fas fa-chart-line"></i> Informes generados el: 02/05/2026 | © 2026 - Clínica Salud+</p>
+  </div>
+</div>
+</body>
+</html>

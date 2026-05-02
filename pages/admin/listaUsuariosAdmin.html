@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ctrl S | Listado de Usuarios</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    /* Contenedor principal */
+    .users-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 0rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .users-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .users-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .users-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.3rem;
+    }
+
+    /* Cuerpo */
+    .users-body {
+      padding: 2rem;
+    }
+
+    /* Acciones del header */
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .titulo-pagina {
+      color: #1f4870;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-nuevo {
+      background: #27ae60;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-nuevo:hover {
+      background: #229954;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    }
+
+    /* Contenedor de la tabla */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 1.2rem;
+      border: 1px solid #eef2f8;
+      background: white;
+    }
+
+    .tabla-usuarios {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .tabla-usuarios thead tr {
+      background: #1f4870;
+      color: white;
+    }
+
+    .tabla-usuarios th,
+    .tabla-usuarios td {
+      padding: 1rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .tabla-usuarios th {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tabla-usuarios tbody tr:hover {
+      background: #f8fafd;
+      transition: background 0.2s;
+    }
+
+    /* Badge de estado */
+    .badge-estado {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-activo {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-inactivo {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Acciones */
+    .acciones {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-editar {
+      background: #3498db;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-editar:hover {
+      background: #2980b9;
+      transform: translateY(-1px);
+    }
+
+    .btn-eliminar {
+      background: #e74c3c;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-eliminar:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #8aaec0;
+      font-style: italic;
+    }
+
+    /* Footer */
+    .users-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .users-body {
+        padding: 1rem;
+      }
+
+      .tabla-usuarios th,
+      .tabla-usuarios td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      .acciones {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .btn-editar, .btn-eliminar {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="users-container">
+  <div class="users-body">
+    <div class="header-actions">
+      <h2 class="titulo-pagina">
+        <i class="fas fa-list-ul"></i> 
+        Usuarios registrados
+      </h2>
+
+      <a href="/pages/admin/registerAdmin.html" class="btn-nuevo">
+        <i class="fas fa-user-plus"></i>Nuevo Usuario
+      </a>
+    </div>
+
+    <div class="table-container">
+      <table class="tabla-usuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Teléfono</th>
+            <th>E-mail</th>
+            <th>Departamento</th>
+            <th>Perfil</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Usuario 1 -->
+          <tr>
+            <td>101</td>
+            <td>Ana María</td>
+            <td>Pérez López</td>
+            <td>+300 1234567</td>
+            <td>ana.perez@clinica.com</td>
+            <td>Administración</td>
+            <td>Administrador</td>
+            <td>ana.perez</td>
+            <td><span class="badge-estado badge-activo"><i class="fas fa-check-circle"></i> Activo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+            </td>
+          </tr>
+          <!-- Usuario 2 -->
+          <tr>
+            <td>102</td>
+            <td>Carlos Andrés</td>
+            <td>Rodríguez Gómez</td>
+            <td>+57 310 987 6543</td>
+            <td>carlos.rodriguez@clinica.com</td>
+            <td>Medicina General</td>
+            <td>Médico</td>
+            <td>carlos.r</td>
+            <td><span class="badge-estado badge-activo"><i class="fas fa-check-circle"></i> Activo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+            </td>
+          </tr>
+          <!-- Usuario 3 -->
+          <tr>
+            <td>103</td>
+            <td>Laura Fernanda</td>
+            <td>Martínez Suárez</td>
+            <td>+57 305 555 1212</td>
+            <td>laura.martinez@clinica.com</td>
+            <td>Cardiología</td>
+            <td>Especialista</td>
+            <td>laura.mt</td>
+            <td><span class="badge-estado badge-activo"><i class="fas fa-check-circle"></i> Activo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+            </td>
+          </tr>
+          <!-- Usuario 4 (inactivo) -->
+          <tr>
+            <td>104</td>
+            <td>Javier Emilio</td>
+            <td>Sánchez Rojas</td>
+            <td>+57 320 444 7890</td>
+            <td>javier.sanchez@clinica.com</td>
+            <td>Pediatría</td>
+            <td>Enfermero</td>
+            <td>javier.se</td>
+            <td><span class="badge-estado badge-inactivo"><i class="fas fa-times-circle"></i> Inactivo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+            </td>
+          </tr>
+          <!-- Usuario 5 -->
+          <tr>
+            <td>105</td>
+            <td>María José</td>
+            <td>García Ortiz</td>
+            <td>+57 312 333 4455</td>
+            <td>maria.garcia@clinica.com</td>
+            <td>Dermatología</td>
+            <td>Recepcionista</td>
+            <td>maria.g</td>
+            <td><span class="badge-estado badge-activo"><i class="fas fa-check-circle"></i> Activo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+            </td>
+          </tr>
+          <!-- Usuario 6 -->
+          <tr>
+            <td>106</td>
+            <td>Pedro Antonio</td>
+            <td>Díaz Castillo</td>
+            <td>+57 301 777 8899</td>
+            <td>pedro.diaz@clinica.com</td>
+            <td>Laboratorio Clínico</td>
+            <td>Técnico de Laboratorio</td>
+            <td>pedro.d</td>
+            <td><span class="badge-estado badge-activo"><i class="fas fa-check-circle"></i> Activo</span></td>
+            <td class="acciones">
+              <a href="EditarUsuarioAdmin.html" class="btn-editar">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+              <a href="#" class="btn-eliminar" onclick="return confirm('¿Está seguro de realizar esta acción?')">
+                <i class="fas fa-trash-alt"></i>Eliminar
+              </a>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
